@@ -3,12 +3,25 @@
 . "$genapp_functions/core"
 . "$genapp_functions/ec2"
 
-create_dir_skel() {
-    mkdir -m 770 "$app_dir/appdynamics"
-}
+appdynamics_dir=$app_dir/appdynamics
 
 install_appdynamics() {
-    echo "TODO: install appdynamics (do we need the whole zip, or just jar?)"
+    echo "Installing appdynamics"
+    _tmp=$app_dir/appdynamics_tmp
+    mkdir $_tmp
+    unzip -qd $_tmp $plugin_dir/lib/appdynamics.zip
+    mv $_tmp/appdynamics $appdynamics_dir
+    rm -rf $_tmp
+    chmod 770 $appdynamics_dir
+}
+
+node_name() {
+    _meta_val=$(metadata appdynamics_node_name "")
+    if [ "$_meta_val" != "" ]; then
+	echo "$_meta_val"
+    else
+	instance_data instance-id
+    fi
 }
 
 app_name() {
@@ -18,15 +31,15 @@ app_name() {
 write_java_opts() {
     _config=$control_dir/java-opts-50-newrelic
     echo "Writing appdynamics java options to $_config"
-    _node_name=$(instance_data instance-id)
+    _node_name=$(node_name)
     _app_name=$(app_name)
     _controller_host=$(metadata appdynamics_controller_host "")
     _controller_port=$(metadata appdynamics_controller_port "")
-    _account=$(metadata appdynamics_account_name "")
+    _account_name=$(metadata appdynamics_account_name "")
     _access_key=$(metadata appdynamics_access_key "")
-    echo "-javaagent:$app_dir/appdynamics/javaagent.jar" >> $_config
-    echo "-Dappdynamics.agent.runtime.dir=$app_dir/appdynamics" >> $_config
-    echo "-Dappdynamics.agent.logs.dir=$app_dir/appdynamics" >> $_config
+    echo "-javaagent:$appdynamics_dir/javaagent.jar" >> $_config
+    echo "-Dappdynamics.agent.runtime.dir=$appdynamics_dir" >> $_config
+    echo "-Dappdynamics.agent.logs.dir=$appdynamics_dir" >> $_config
     echo "-Dappdynamics.agent.applicationName=$_app_name" >> $_config
     echo "-Dappdynamics.agent.nodeName=$_node_name" >> $_config
     echo "-Dappdynamics.agent.tierName=$_app_name" >> $_config

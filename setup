@@ -5,6 +5,6 @@ set -e
 
 . "$plugin_dir/functions"
 
-create_dir_skel
+install_appdynamics
 write_java_opts
 write_jboss_modules_system_pkgs
