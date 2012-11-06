@@ -1,0 +1,42 @@
+# -*-shell-script-*-
+
+. "$genapp_functions/core"
+. "$genapp_functions/ec2"
+
+create_dir_skel() {
+    mkdir -m 770 "$app_dir/appdynamics"
+}
+
+install_appdynamics() {
+    echo "TODO: install appdynamics (do we need the whole zip, or just jar?)"
+}
+
+app_name() {
+    echo "${extra_app_id#*/}" # name part of app ID (e.g. bar in foo/bar)
+}
+
+write_java_opts() {
+    _config=$control_dir/java-opts-50-newrelic
+    echo "Writing appdynamics java options to $_config"
+    _node_name=$(instance_data instance-id)
+    _app_name=$(app_name)
+    _controller_host=$(metadata appdynamics_controller_host "")
+    _controller_port=$(metadata appdynamics_controller_port "")
+    _account=$(metadata appdynamics_account_name "")
+    _access_key=$(metadata appdynamics_access_key "")
+    echo "-javaagent:$app_dir/appdynamics/javaagent.jar" >> $_config
+    echo "-Dappdynamics.agent.runtime.dir=$app_dir/appdynamics" >> $_config
+    echo "-Dappdynamics.agent.logs.dir=$app_dir/appdynamics" >> $_config
+    echo "-Dappdynamics.agent.applicationName=$_app_name" >> $_config
+    echo "-Dappdynamics.agent.nodeName=$_node_name" >> $_config
+    echo "-Dappdynamics.agent.tierName=$_app_name" >> $_config
+    echo "-Dappdynamics.controller.hostName=$_controller_host" >> $_config
+    echo "-Dappdynamics.controller.port=$_controller_port" >> $_config
+    echo "-Dappdynamics.agent.accountName=$_account_name" >> $_config
+    echo "-Dappdynamics.agent.accountAccessKey=$_access_key" >> $_config
+}
+
+write_jboss_modules_system_pkgs() {
+    echo "com.singularity" \
+      > "$control_dir/jboss-modules-system-pkgs-appdynamics"
+}
