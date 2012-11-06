@@ -29,24 +29,24 @@ app_name() {
 }
 
 write_java_opts() {
-    _config=$control_dir/java-opts-50-appdynamics
-    echo "Writing appdynamics java options to $_config"
+    _opts_file=$control_dir/java-opts-50-appdynamics
+    echo "Writing appdynamics java options to $_opts_file"
     _node_name=$(node_name)
     _app_name=$(app_name)
     _controller_host=$(metadata appdynamics_controller_host "")
     _controller_port=$(metadata appdynamics_controller_port "")
     _account_name=$(metadata appdynamics_account_name "")
-    _access_key=$(metadata appdynamics_access_key "")
-    echo "-javaagent:$appdynamics_dir/javaagent.jar" >> $_config
-    echo "-Dappdynamics.agent.runtime.dir=$appdynamics_dir" >> $_config
-    echo "-Dappdynamics.agent.logs.dir=$appdynamics_dir" >> $_config
-    echo "-Dappdynamics.agent.applicationName=$_app_name" >> $_config
-    echo "-Dappdynamics.agent.nodeName=$_node_name" >> $_config
-    echo "-Dappdynamics.agent.tierName=$_app_name" >> $_config
-    echo "-Dappdynamics.controller.hostName=$_controller_host" >> $_config
-    echo "-Dappdynamics.controller.port=$_controller_port" >> $_config
-    echo "-Dappdynamics.agent.accountName=$_account_name" >> $_config
-    echo "-Dappdynamics.agent.accountAccessKey=$_access_key" >> $_config
+    _access_key=$(metadata appdynamics_account_access_key "")
+    echo "-javaagent:$appdynamics_dir/javaagent.jar" \
+         "-Dappdynamics.agent.runtime.dir=$appdynamics_dir" \
+         "-Dappdynamics.agent.logs.dir=$appdynamics_dir" \
+         "-Dappdynamics.agent.applicationName=$_app_name" \
+         "-Dappdynamics.agent.nodeName=$_node_name" \
+         "-Dappdynamics.agent.tierName=$_app_name" \
+         "-Dappdynamics.controller.hostName=$_controller_host" \
+         "-Dappdynamics.controller.port=$_controller_port" \
+         "-Dappdynamics.agent.accountName=$_account_name" \
+         "-Dappdynamics.agent.accountAccessKey=$_access_key" >> $_opts_file
 }
 
 write_jboss_modules_system_pkgs() {
