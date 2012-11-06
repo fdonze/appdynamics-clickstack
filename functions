@@ -29,7 +29,7 @@ app_name() {
 }
 
 write_java_opts() {
-    _config=$control_dir/java-opts-50-newrelic
+    _config=$control_dir/java-opts-50-appdynamics
     echo "Writing appdynamics java options to $_config"
     _node_name=$(node_name)
     _app_name=$(app_name)
