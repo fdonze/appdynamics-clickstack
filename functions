@@ -13,6 +13,7 @@ install_appdynamics() {
     mv $_tmp/appdynamics $appdynamics_dir
     rm -rf $_tmp
     chmod 770 $appdynamics_dir
+    chmod -R g+w $appdynamics_dir
 }
 
 node_name() {
