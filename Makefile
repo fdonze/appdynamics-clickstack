@@ -9,7 +9,7 @@ pkg_files = README LICENSE setup functions lib
 
 include plugin.mk
 
-appdynamics_ver = 3.3.4.2
+appdynamics_ver = 3.6
 appdynamics_src = https://s3.amazonaws.com/cloudbees-downloads/appserver/appdynamics-$(appdynamics_ver).zip
 
 # TODO: do we need the whole zip, or just the jar?
